@@ -1,76 +1,57 @@
 package backend.team3.pro.Model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "vaatteet")
 public class Vaatte {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    private String name;
+    private String size;
+    private double price;
 
+    public Vaatte() {}
 
-        private String name;
-        private String size;
-        private double price;
-        private String color;
-        private String Type;
-        private String manufacturer;
-    
-        public Vaatte(String name, String size, double price) {
-            this.name = name;
-            this.size = size;
-            this.price = price;
-        }
-    
-        public String getName() {
-            return name;
-        }
-    
-        public void setName(String name) {
-            this.name = name;
-        }
-    
-        public String getSize() {
-            return size;
-        }
-    
-        public void setSize(String size) {
-            this.size = size;
-        }
-    
-        public double getPrice() {
-            return price;
-        }
-    
-        public void setPrice(double price) {
-            this.price = price;
-        }
-        
-        public String getColor() {
-            return color;
-        }
+    public Vaatte(String name, String size, double price) {
+        this.name = name;
+        this.size = size;
+        this.price = price;
+    }
 
-        public void setColor(String color) {
-            this.color = color;
-        }
+    public Long getId() {
+        return id;
+    }
 
-        public String getType() {
-            return Type;
-        }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-        public void setType(String type) {
-            Type = type;
-        }
+    public String getName() {
+        return name;
+    }
 
-        public String getManufacturer() {
-            return manufacturer;
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        public void setManufacturer(String manufacturer) {
-            this.manufacturer = manufacturer;
-        }
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }
