@@ -9,17 +9,20 @@
     <h1>Welcome to the Index Page</h1>
 
     <form th:action="@{/index}" method="post">
+        <input type="hidden" name="id" th:value="${vaate?.id}">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" th:value="${vaate?.name}" required>
         <br>
         <label for="size">Size:</label>
-        <input type="text" id="size" name="size" required>
+        <input type="text" id="size" name="size" th:value="${vaate?.size}" required>
         <br>
         <label for="price">Price:</label>
-        <input type="number" id="price" name="price" step="0.01" required>
+        <input type="number" id="price" name="price" step="0.01" th:value="${vaate?.price}" required>
         <br>
-        <button type="submit">Add Vaatte</button>
+        <button type="submit" th:text="${vaate?.id != null} ? 'Update Vaate' : 'Add Vaatte'"></button>
     </form>
+
+    <button><a href="/homepage">View All Vaatteet</a></button>
 
 </body>
 </html>

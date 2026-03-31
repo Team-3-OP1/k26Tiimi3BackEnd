@@ -18,6 +18,7 @@
           Name: <span th:text="${vaate.name}"></span>, Size:
           <span th:text="${vaate.size}"></span>, Price:
           <span th:text="${vaate.price}"></span>
+          | <a th:href="@{/edit/{id}(id=${vaate.id})}">Update</a>
         </li>
       </ul>
     </div>
