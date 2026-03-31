@@ -1,27 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Welcome to the Homepage</h1>
 
     <h2>Added Vaatteet:</h2>
     <div th:if="${vaatteet.isEmpty()}">
-        <p>No items added yet.</p>
+      <p>No items added yet.</p>
     </div>
     <div th:unless="${vaatteet.isEmpty()}">
-        <ul>
-            <li th:each="vaate : ${vaatteet}">
-                Name: <span th:text="${vaate.name}"></span>,
-                Size: <span th:text="${vaate.size}"></span>,
-                Price: <span th:text="${vaate.price}"></span>
-            </li>
-        </ul>
+      <ul>
+        <li th:each="vaate : ${vaatteet}">
+          Name: <span th:text="${vaate.name}"></span>, Size:
+          <span th:text="${vaate.size}"></span>, Price:
+          <span th:text="${vaate.price}"></span>
+        </li>
+      </ul>
     </div>
 
     <p><a href="/index">Add another Vaate</a></p>
-</body>
+  </body>
 </html>

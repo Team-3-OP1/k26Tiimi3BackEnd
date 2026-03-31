@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Vaatte {
+public class Vaate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,9 +15,10 @@ public class Vaatte {
     private String size;
     private double price;
 
-    public Vaatte() {}
+    public Vaate() {
+    }
 
-    public Vaatte(String name, String size, double price) {
+    public Vaate(String name, String size, double price) {
         this.name = name;
         this.size = size;
         this.price = price;
