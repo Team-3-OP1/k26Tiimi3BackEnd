@@ -1,0 +1,26 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Lisaa valmistaja</title>
+  </head>
+  <body>
+    <h2>Lisaa uusi valmistaja</h2>
+
+    <p th:if="${error}" th:text="${error}" style="color: red"></p>
+
+    <form
+      th:action="@{/tallennavalmistaja}"
+      th:object="${valmistaja}"
+      method="post"
+    >
+      <label>Nimi:</label>
+      <input type="text" th:field="*{name}" required />
+      <br /><br />
+
+      <button type="submit">Tallenna valmistaja</button>
+    </form>
+
+    <br />
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>
