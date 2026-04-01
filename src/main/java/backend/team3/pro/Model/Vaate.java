@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Vaate {
@@ -15,21 +17,22 @@ public class Vaate {
     private String size;
     private double price;
 
+    @ManyToOne
+    @JoinColumn(name = "valmistaja_id")
+    private Valmistaja valmistaja;
+
     public Vaate() {
     }
 
-    public Vaate(String name, String size, double price) {
+    public Vaate(String name, String size, double price, Valmistaja valmistaja) {
         this.name = name;
         this.size = size;
         this.price = price;
+        this.valmistaja = valmistaja;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -54,5 +57,13 @@ public class Vaate {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Valmistaja getValmistaja() {
+        return valmistaja;
+    }
+
+    public void setValmistaja(Valmistaja valmistaja) {
+        this.valmistaja = valmistaja;
     }
 }

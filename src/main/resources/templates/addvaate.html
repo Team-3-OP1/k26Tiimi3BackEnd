@@ -1,0 +1,38 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Lisää vaate</title>
+  </head>
+  <body>
+    <h2>Lisää uusi vaate</h2>
+
+    <form th:action="@{/tallenna}" th:object="${vaate}" method="post">
+      <label>Nimi:</label>
+      <input type="text" th:field="*{name}" />
+      <br /><br />
+
+      <label>Koko:</label>
+      <input type="text" th:field="*{size}" />
+      <br /><br />
+
+      <label>Hinta:</label>
+      <input type="number" step="0.01" th:field="*{price}" />
+      <br /><br />
+
+      <label>Valmistaja:</label>
+      <select th:field="*{valmistaja.id}">
+        <option
+          th:each="valmistaja : ${valmistajat}"
+          th:value="${valmistaja.id}"
+          th:text="${valmistaja.name}"
+        ></option>
+      </select>
+      <br /><br />
+
+      <button type="submit">Tallenna</button>
+    </form>
+
+    <br />
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>

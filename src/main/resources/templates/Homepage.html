@@ -1,27 +1,29 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Koiravaatekauppa</title>
   </head>
   <body>
-    <h1>Welcome to the Homepage</h1>
+    <h1>Koiravaatekauppa</h1>
 
-    <h2>Added Vaatteet:</h2>
-    <div th:if="${vaatteet.isEmpty()}">
-      <p>No items added yet.</p>
-    </div>
-    <div th:unless="${vaatteet.isEmpty()}">
-      <ul>
-        <li th:each="vaate : ${vaatteet}">
-          Name: <span th:text="${vaate.name}"></span>, Size:
-          <span th:text="${vaate.size}"></span>, Price:
-          <span th:text="${vaate.price}"></span>
-        </li>
-      </ul>
-    </div>
+    <a th:href="@{/addvaate}">Lisää uusi vaate</a>
 
-    <p><a href="/index">Add another Vaate</a></p>
+    <br /><br />
+
+    <table border="1">
+      <tr>
+        <th>Nimi</th>
+        <th>Koko</th>
+        <th>Hinta</th>
+        <th>Valmistaja</th>
+      </tr>
+
+      <tr th:each="vaate : ${vaatteet}">
+        <td th:text="${vaate.name}"></td>
+        <td th:text="${vaate.size}"></td>
+        <td th:text="${vaate.price}"></td>
+        <td th:text="${vaate.valmistaja.name}"></td>
+      </tr>
+    </table>
   </body>
 </html>
