@@ -3,6 +3,7 @@ package backend.team3.pro.Controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import backend.team3.pro.Model.Vaate;
@@ -21,6 +22,7 @@ public class VaateController {
         this.valmistajaRepository = valmistajaRepository;
     }
 
+    // Näytä käyttäjälle uuden vaatteen lisäys lomake
     @GetMapping("/addvaate")
     public String naytaLomake(Model model) {
         model.addAttribute("vaate", new Vaate());
@@ -28,22 +30,28 @@ public class VaateController {
         return "addvaate";
     }
 
+    // Tallenna uusi Vaate tietokantaan
     @PostMapping("/tallenna")
     public String tallenna(Vaate vaate) {
-        if (vaate.getValmistaja() != null && vaate.getValmistaja().getId() != null) {
-            Valmistaja valmistaja = valmistajaRepository.findById(vaate.getValmistaja().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Valmistajaa ei loydy annetulla id:lla"));
-            vaate.setValmistaja(valmistaja);
+        if (vaate.getValmistaja() == null || vaate.getValmistaja().getId() == null) {
+            throw new IllegalArgumentException("Valmistaja on pakollinen");
         }
+
+        Valmistaja valmistaja = valmistajaRepository.findById(vaate.getValmistaja().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Valmistajaa ei loydy annetulla id:lla"));
+        vaate.setValmistaja(valmistaja);
 
         vaateRepository.save(vaate);
         return "redirect:/homepage";
     }
 
-    @GetMapping("/homepage")
-    public String showHomepage(Model model) {
-        model.addAttribute("vaatteet", vaateRepository.findAll());
-        return "Homepage";
+    @GetMapping("/edit/{id}")
+    public String editVaate(@PathVariable("id") Long id, Model model) {
+        Vaate vaate = vaateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Vaate ei loydy annetulla id:lla"));
+        model.addAttribute("vaate", vaate);
+        model.addAttribute("valmistajat", valmistajaRepository.findAll());
+        return "addvaate";
     }
 
 }

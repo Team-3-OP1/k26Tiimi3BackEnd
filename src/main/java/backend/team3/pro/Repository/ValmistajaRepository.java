@@ -8,4 +8,6 @@ import backend.team3.pro.Model.Valmistaja;
 @Repository
 public interface ValmistajaRepository extends CrudRepository<Valmistaja, Long> {
 
+	boolean existsByName(String name);
+
 }

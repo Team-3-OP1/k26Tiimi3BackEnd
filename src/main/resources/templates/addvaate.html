@@ -7,6 +7,8 @@
     <h2>Lisää uusi vaate</h2>
 
     <form th:action="@{/tallenna}" th:object="${vaate}" method="post">
+      <input type="hidden" th:field="*{id}" />
+
       <label>Nimi:</label>
       <input type="text" th:field="*{name}" />
       <br /><br />
@@ -20,7 +22,10 @@
       <br /><br />
 
       <label>Valmistaja:</label>
-      <select th:field="*{valmistaja.id}">
+      <select th:field="*{valmistaja.id}" required>
+        <option value="" disabled th:selected="${vaate.valmistaja == null}">
+          Valitse valmistaja
+        </option>
         <option
           th:each="valmistaja : ${valmistajat}"
           th:value="${valmistaja.id}"

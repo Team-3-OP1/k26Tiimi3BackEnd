@@ -36,7 +36,9 @@
         <td th:text="${vaate.name}"></td>
         <td th:text="${vaate.size}"></td>
         <td th:text="${vaate.price}"></td>
-        <td th:text="${vaate.valmistaja.name}"></td>
+        <td
+          th:text="${vaate.valmistaja != null ? vaate.valmistaja.name : 'Tuntematon'}"
+        ></td>
       </tr>
     </table>
   </body>
