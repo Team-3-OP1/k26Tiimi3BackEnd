@@ -15,12 +15,17 @@
     </div>
     <div th:unless="${vaatteet.isEmpty()}">
       <ul>
-        <li th:each="vaate : ${vaatteet}">
-          Name: <span th:text="${vaate.name}"></span>, Size:
-          <span th:text="${vaate.size}"></span>, Price:
-          <span th:text="${vaate.price}"></span>
-          | <a th:href="@{/edit/{id}(id=${vaate.id})}">Update</a>
-        </li>
+ <li th:each="vaate : ${vaatteet}">
+  Name: <span th:text="${vaate.name}"></span>, Size:
+  <span th:text="${vaate.size}"></span>, Price:
+  <span th:text="${vaate.price}"></span>
+  
+  | <a th:href="@{/edit/{id}(id=${vaate.id})}">Update</a>
+  | <a th:href="@{/delete/{id}(id=${vaate.id})}"
+       onclick="return confirm('Halauatko varmasti poistaa?')">
+       Delete
+    </a>
+</li>
       </ul>
     </div>
 
