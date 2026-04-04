@@ -13,39 +13,40 @@
     <div th:if="${vaatteet.isEmpty()}">
       <p>No items added yet.</p>
     </div>
-    <div th:unless="${vaatteet.isEmpty()}">
-      <ul>
- <li th:each="vaate : ${vaatteet}">
-  Name: <span th:text="${vaate.name}"></span>, Size:
-  <span th:text="${vaate.size}"></span>, Price:
-  <span th:text="${vaate.price}"></span>
-  
-  | <a th:href="@{/edit/{id}(id=${vaate.id})}">Update</a>
-  | <a th:href="@{/delete/{id}(id=${vaate.id})}"
-       onclick="return confirm('Halauatko varmasti poistaa?')">
-       Delete
-    </a>
-</li>
-      </ul>
-    </div>
 
-    <br /><br />
-
-    <table border="1">
+    <table border="1" th:if="${!vaatteet.isEmpty()}">
       <tr>
         <th>Nimi</th>
+        <th>Tyyppi</th>
+        <th>Väri</th>
         <th>Koko</th>
         <th>Hinta</th>
         <th>Valmistaja</th>
+        <th>Toiminnot</th>
       </tr>
 
       <tr th:each="vaate : ${vaatteet}">
         <td th:text="${vaate.name}"></td>
+        <td th:text="${vaate.type}"></td>
+        <td th:text="${vaate.color}"></td>
         <td th:text="${vaate.size}"></td>
         <td th:text="${vaate.price}"></td>
         <td
           th:text="${vaate.valmistaja != null ? vaate.valmistaja.name : 'Tuntematon'}"
         ></td>
+        <td>
+          <a th:href="@{/edit/{id}(id=${vaate.id})}">
+            <button type="button">Muokkaa</button>
+          </a>
+          <a
+            th:href="@{/delete/{id}(id=${vaate.id})}"
+            onclick="
+              return confirm('Haluatko varmasti poistaa tämän vaatteen?');
+            "
+          >
+            <button type="button">Poista</button>
+          </a>
+        </td>
       </tr>
     </table>
   </body>
