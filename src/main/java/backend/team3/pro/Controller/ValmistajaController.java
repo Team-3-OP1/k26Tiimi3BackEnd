@@ -1,13 +1,15 @@
 package backend.team3.pro.Controller;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import backend.team3.pro.Model.Valmistaja;
 import backend.team3.pro.Model.Vaate;
+import backend.team3.pro.Model.Valmistaja;
 import backend.team3.pro.Repository.VaateRepository;
 import backend.team3.pro.Repository.ValmistajaRepository;
 
@@ -74,5 +76,15 @@ public class ValmistajaController {
         valmistaja.setName(nimi);
         valmistajaRepository.save(valmistaja);
         return "redirect:/homepage";
+    }
+
+    @GetMapping("/valmistaja/edit/{id}")
+    public String editValmistaja(@PathVariable Long id, Model model) {
+        Optional<Valmistaja> valmistajaOpt = valmistajaRepository.findById(id);
+        if (valmistajaOpt.isEmpty()) {
+            return "redirect:/homepage";
+        }
+        model.addAttribute("valmistaja", valmistajaOpt.get());
+        return "editvalmistaja";
     }
 }

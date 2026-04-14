@@ -29,16 +29,17 @@ public class VaateController {
         model.addAttribute("valmistajat", valmistajaRepository.findAll());
         return "addvaate";
     }
-    // Poista vaate tietokannasta 
-    @GetMapping("/delete/{id}")
-public String deleteVaate(@PathVariable("id") Long id) {
-    if (!vaateRepository.existsById(id)) {
-        throw new IllegalArgumentException("Vaate ei loydy annetulla id:lla");
-    }
 
-    vaateRepository.deleteById(id);
-    return "redirect:/homepage";
-}
+    // Poista vaate tietokannasta
+    @GetMapping("/delete/{id}")
+    public String deleteVaate(@PathVariable("id") Long id) {
+        if (!vaateRepository.existsById(id)) {
+            throw new IllegalArgumentException("Vaate ei loydy annetulla id:lla");
+        }
+
+        vaateRepository.deleteById(id);
+        return "redirect:/homepage";
+    }
 
     // Tallenna uusi Vaate tietokantaan
     @PostMapping("/tallenna")
@@ -61,7 +62,7 @@ public String deleteVaate(@PathVariable("id") Long id) {
                 .orElseThrow(() -> new IllegalArgumentException("Vaate ei loydy annetulla id:lla"));
         model.addAttribute("vaate", vaate);
         model.addAttribute("valmistajat", valmistajaRepository.findAll());
-        return "addvaate";
+        return "editvaate";
     }
 
 }
