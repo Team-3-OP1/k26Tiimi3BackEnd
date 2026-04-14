@@ -3,24 +3,57 @@ package backend.team3.pro.Controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import backend.team3.pro.Model.Valmistaja;
+import backend.team3.pro.Model.Vaate;
+import backend.team3.pro.Repository.VaateRepository;
 import backend.team3.pro.Repository.ValmistajaRepository;
 
 @Controller
 public class ValmistajaController {
 
     private final ValmistajaRepository valmistajaRepository;
+    private final VaateRepository vaateRepository;
 
-    public ValmistajaController(ValmistajaRepository valmistajaRepository) {
+    public ValmistajaController(ValmistajaRepository valmistajaRepository, VaateRepository vaateRepository) {
         this.valmistajaRepository = valmistajaRepository;
+        this.vaateRepository = vaateRepository;
     }
 
     @GetMapping("/addvalmistaja")
     public String naytaValmistajaLomake(Model model) {
         model.addAttribute("valmistaja", new Valmistaja());
         return "addvalmistaja";
+    }
+
+    @GetMapping("/valmistajat")
+    public String naytaValmistajat(Model model) {
+        model.addAttribute("valmistajat", valmistajaRepository.findAll());
+        return "valmistajat";
+    }
+
+    @GetMapping("/deletevalmistaja/{id}")
+    public String poistaValmistaja(@PathVariable("id") Long id, Model model) {
+        // Verificăm dacă producătorul este folosit de vreo haină
+        boolean onKaytossa = false;
+        Iterable<Vaate> vaatteet = vaateRepository.findAll();
+        for (Vaate v : vaatteet) {
+            if (v.getValmistaja() != null && v.getValmistaja().getId().equals(id)) {
+                onKaytossa = true;
+                break;
+            }
+        }
+
+        if (onKaytossa) {
+            model.addAttribute("error", "Valmistajaa ei voi poistaa, koska se on käytössä!");
+            model.addAttribute("valmistajat", valmistajaRepository.findAll());
+            return "valmistajat";
+        }
+
+        valmistajaRepository.deleteById(id);
+        return "redirect:/valmistajat";
     }
 
     @PostMapping("/tallennavalmistaja")

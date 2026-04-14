@@ -1,0 +1,34 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Valmistajat</title>
+  </head>
+  <body>
+    <h1>Valmistajat</h1>
+    
+    <p th:if="${error}" style="color: red;" th:text="${error}"></p>
+
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+    <table border="1" style="margin-top: 20px;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nimi</th>
+          <th>Toiminnot</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="valmistaja : ${valmistajat}">
+          <td th:text="${valmistaja.id}"></td>
+          <td th:text="${valmistaja.name}"></td>
+          <td>
+            <a th:href="@{/deletevalmistaja/{id}(id=${valmistaja.id})}" 
+               onclick="return confirm('Haluatko varmasti poistaa tämän valmistajan?')">
+              Poista
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
