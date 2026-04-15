@@ -19,13 +19,19 @@ public class VaateRestController {
         this.vaateRepository = vaateRepository;
     }
 
-    @GetMapping("/api/vaatteet")
-    public @ResponseBody List<Vaate> vaateListRest() {
+    @GetMapping("/api/tuotteet")
+    public @ResponseBody List<Vaate> tuoteListRest() {
         return (List<Vaate>) vaateRepository.findAll();
     }
 
-    @GetMapping("/api/vaate/{id}")
-    public @ResponseBody Vaate findVaateRest(@PathVariable("id") Long id) {
+    @GetMapping("/api/tuote/{id}")
+    public @ResponseBody Vaate findTuoteRest(@PathVariable("id") Long id) {
         return vaateRepository.findById(id).orElse(null);
     }
+
+    @GetMapping("/api/vaatteet")
+    public @ResponseBody List<Vaate> vaateListRest() {
+        return (List<Vaate>) vaateRepository.findAllByType("Vaate");
+    }
+
 }
