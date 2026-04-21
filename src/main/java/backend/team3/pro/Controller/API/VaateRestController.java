@@ -2,6 +2,7 @@ package backend.team3.pro.Controller.API;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import backend.team3.pro.Model.Vaate;
 import backend.team3.pro.Repository.VaateRepository;
 
+@CrossOrigin(origins = "http://localhost:5173") // Salli CORS-pyynnöt localhost:5173:sta
 @RestController
 public class VaateRestController {
 
