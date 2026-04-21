@@ -2,11 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Lisaa valmistaja</title>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <h2>Lisaa uusi valmistaja</h2>
 
-    <p th:if="${error}" th:text="${error}" style="color: red"></p>
+    <p th:if="${error}" th:text="${error}" class="error"></p>
 
     <form
       th:action="@{/tallennavalmistaja}"
@@ -14,7 +19,12 @@
       method="post"
     >
       <label>Nimi:</label>
-      <input type="text" th:field="*{name}" required />
+      <input type="text" th:field="*{name}" />
+      <div
+        th:if="${#fields.hasErrors('name')}"
+        th:errors="*{name}"
+        class="error"
+      ></div>
       <br /><br />
 
       <button type="submit">Tallenna valmistaja</button>

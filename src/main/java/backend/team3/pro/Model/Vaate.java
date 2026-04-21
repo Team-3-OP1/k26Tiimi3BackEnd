@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Vaate {
@@ -13,10 +15,15 @@ public class Vaate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message = "Nimi on pakollinen")
     private String name;
+
     private String type;
     private String color;
     private String size;
+
+    @DecimalMin(value = "0.01", message = "Hinnan pitää olla suurempi kuin 0")
     private double price;
 
     @ManyToOne
