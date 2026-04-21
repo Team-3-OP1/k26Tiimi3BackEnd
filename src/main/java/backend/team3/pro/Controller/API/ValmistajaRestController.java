@@ -2,6 +2,7 @@ package backend.team3.pro.Controller.API;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import backend.team3.pro.Model.Valmistaja;
 import backend.team3.pro.Repository.ValmistajaRepository;
 
+@CrossOrigin(origins = "http://localhost:5173") // Salli CORS-pyynnöt localhost:5173:sta
 @RestController
 public class ValmistajaRestController {
 
