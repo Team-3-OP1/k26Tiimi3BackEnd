@@ -1,5 +1,6 @@
 package backend.team3.pro.Controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -92,5 +93,19 @@ public class ValmistajaController {
 
         model.addAttribute("valmistaja", valmistajaOpt.get());
         return "editvalmistaja";
+    }
+
+    @GetMapping("/valmistaja/{id}/tuotteet")
+    public String naytaValmistajanTuotteet(@PathVariable("id") Long id, Model model) {
+        Optional<Valmistaja> valmistajaOpt = valmistajaRepository.findById(id);
+
+        if (valmistajaOpt.isEmpty()) {
+            return "redirect:/valmistajat";
+        }
+
+        List<Vaate> tuotteet = vaateRepository.findAllByValmistaja_Id(id);
+        model.addAttribute("valmistaja", valmistajaOpt.get());
+        model.addAttribute("tuotteet", tuotteet);
+        return "valmistajantuotteet";
     }
 }

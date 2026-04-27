@@ -14,4 +14,7 @@ public interface VaateRepository extends CrudRepository<Vaate, Long> {
     public Optional<Vaate> findByType(String type);
 
     public List<Vaate> findAllByType(String type);
+
+    // Palauttaa kaikki tietyn valmistajan tuotteet
+    public List<Vaate> findAllByValmistaja_Id(Long valmistaja_id);
 }

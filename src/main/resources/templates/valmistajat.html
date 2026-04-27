@@ -22,9 +22,9 @@
           <td th:text="${valmistaja.id}"></td>
           <td th:text="${valmistaja.name}"></td>
           <td>
-            <a th:href="@{/valmistaja/edit/{id}(id=${valmistaja.id})}"
-              >Muokkaa</a
-            >
+            <a th:href="@{/valmistaja/edit/{id}(id=${valmistaja.id})}">Muokkaa</a>
+            |
+            <a th:href="@{/valmistaja/{id}/tuotteet(id=${valmistaja.id})}">Näytä tuotteet</a>
             |
             <a
               th:href="@{/deletevalmistaja/{id}(id=${valmistaja.id})}"
