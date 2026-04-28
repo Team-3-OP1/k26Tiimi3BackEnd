@@ -36,4 +36,9 @@ public class VaateRestController {
         return (List<Vaate>) vaateRepository.findAllByType("Vaate");
     }
 
+    @GetMapping("/api/valmistaja/{valmistajaId}/vaatteet")
+    public @ResponseBody List<Vaate> findVaatteetByValmistajaId(@PathVariable("valmistajaId") Long valmistajaId) {
+        return (List<Vaate>) vaateRepository.findAllByValmistaja_Id(valmistajaId);
+    }
+
 }
