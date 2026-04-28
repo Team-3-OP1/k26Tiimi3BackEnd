@@ -19,5 +19,4 @@ public class HomepageController {
         model.addAttribute("vaatteet", repository.findAll());
         return "Homepage";
     }
-
 }

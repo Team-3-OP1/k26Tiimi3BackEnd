@@ -1,0 +1,50 @@
+<!doctype html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <title>Asiakkaat</title>
+  </head>
+  <body>
+    <h1>Rekisteröityneet asiakkaat</h1>
+
+    <div th:if="${asiakkaat.isEmpty()}">
+      <p>No customers added yet.</p>
+    </div>
+
+    <table border="1" th:if="${!asiakkaat.isEmpty()}">
+      <tr>
+        <th>Etunimi</th>
+        <th>Sukunimi</th>
+        <th>Sähköposti</th>
+        <th sec:authorize="hasRole('ADMIN')">Toiminnot</th>
+      </tr>
+
+      <tr th:each="asiakas : ${asiakkaat}">
+        <td th:text="${asiakas.etunimi}"></td>
+        <td th:text="${asiakas.sukunimi}"></td>
+        <td th:text="${asiakas.sposti}"></td>
+
+        <td sec:authorize="hasRole('ADMIN')">
+          <a th:href="@{/editasiakas/{id}(id=${asiakas.id})}">
+            <button type="button">Muokkaa</button>
+          </a>
+          <a
+            th:href="@{/deleteasiakas/{id}(id=${asiakas.id})}"
+            onclick="
+              return confirm(
+                'Haluatko varmasti poistaa tämän asiakkaan tietokannasta?',
+              );
+            "
+          >
+            <button type="button">Poista</button>
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <br />
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>

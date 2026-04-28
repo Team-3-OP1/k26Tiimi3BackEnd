@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Lisää uusi asiakas</title>
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Lisää uusi asiakas</h1>
+
+    <form th:action="@{/saveasiakas}" th:object="${asiakas}" method="post">
+      <div>
+        <label>Etunimi:</label>
+        <input type="text" th:field="*{etunimi}" />
+        <div
+          class="error"
+          th:if="${#fields.hasErrors('etunimi')}"
+          th:errors="*{etunimi}"
+        ></div>
+      </div>
+      <br />
+      <div>
+        <label>Sukunimi:</label>
+        <input type="text" th:field="*{sukunimi}" />
+      </div>
+      <br />
+      <div>
+        <label>Sähköposti:</label>
+        <input type="email" th:field="*{sposti}" required />
+      </div>
+      <br />
+      <input type="submit" value="Tallenna asiakas" />
+    </form>
+
+    <br />
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>

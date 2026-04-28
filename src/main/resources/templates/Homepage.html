@@ -1,5 +1,8 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <head>
     <title>Koiravaatekauppa</title>
   </head>
@@ -17,8 +20,13 @@
       |
       <a th:href="@{/addvalmistaja}">Lisää uusi valmistaja</a>
       |
+      <a th:href="@{/addasiakas}">Lisää uusi asiakas</a>
+      |
+      <a th:href="@{/asiakkaat}">Katso asiakkaat</a>
     </div>
+
     <a th:href="@{/valmistajat}">Katso valmistajat</a>
+
     <h2>Added Vaatteet:</h2>
     <div th:if="${vaatteet.isEmpty()}">
       <p>No items added yet.</p>
