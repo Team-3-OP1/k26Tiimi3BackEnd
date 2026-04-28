@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <title>Valmistajat</title>
   </head>
@@ -8,7 +8,16 @@
 
     <p th:if="${error}" style="color: red" th:text="${error}"></p>
 
-    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+    <p>
+      <a th:href="@{/homepage}">Takaisin etusivulle</a>
+      |
+      <a th:href="@{/logout}">Kirjaudu ulos</a>
+    </p>
+
+    <p sec:authorize="hasRole('ADMIN')">
+      <a th:href="@{/addvalmistaja}">Lisää uusi valmistaja</a>
+    </p>
+
     <table border="1" style="margin-top: 20px">
       <thead>
         <tr>
@@ -22,18 +31,22 @@
           <td th:text="${valmistaja.id}"></td>
           <td th:text="${valmistaja.name}"></td>
           <td>
-            <a th:href="@{/valmistaja/edit/{id}(id=${valmistaja.id})}">Muokkaa</a>
-            |
+            <span sec:authorize="hasRole('ADMIN')">
+              <a th:href="@{/valmistaja/edit/{id}(id=${valmistaja.id})}">Muokkaa</a>
+              |
+            </span>
             <a th:href="@{/valmistaja/{id}/tuotteet(id=${valmistaja.id})}">Näytä tuotteet</a>
             |
-            <a
-              th:href="@{/deletevalmistaja/{id}(id=${valmistaja.id})}"
-              onclick="
-                return confirm('Haluatko varmasti poistaa tämän valmistajan?');
-              "
-            >
-              Poista
-            </a>
+            <span sec:authorize="hasRole('ADMIN')">
+              <a
+                th:href="@{/deletevalmistaja/{id}(id=${valmistaja.id})}"
+                onclick="
+                  return confirm('Haluatko varmasti poistaa tämän valmistajan?');
+                "
+              >
+                Poista
+              </a>
+            </span>
           </td>
         </tr>
       </tbody>

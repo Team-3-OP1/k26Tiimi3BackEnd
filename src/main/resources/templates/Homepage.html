@@ -1,15 +1,23 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <title>Koiravaatekauppa</title>
   </head>
   <body>
     <h1>Koiravaatekauppa</h1>
 
-    <a th:href="@{/addvaate}">Lisää uusi vaate</a>
-    |
-    <a th:href="@{/addvalmistaja}">Lisää uusi valmistaja</a>
-    |
+    <p>
+      Kirjautunut: <span sec:authentication="name"></span>
+      |
+      <a th:href="@{/logout}">Kirjaudu ulos</a>
+    </p>
+
+    <div sec:authorize="hasRole('ADMIN')">
+      <a th:href="@{/addvaate}">Lisää uusi vaate</a>
+      |
+      <a th:href="@{/addvalmistaja}">Lisää uusi valmistaja</a>
+      |
+    </div>
     <a th:href="@{/valmistajat}">Katso valmistajat</a>
     <h2>Added Vaatteet:</h2>
     <div th:if="${vaatteet.isEmpty()}">
@@ -36,7 +44,7 @@
         <td
           th:text="${vaate.valmistaja != null ? vaate.valmistaja.name : 'Tuntematon'}"
         ></td>
-        <td>
+        <td sec:authorize="hasRole('ADMIN')">
           <a th:href="@{/edit/{id}(id=${vaate.id})}">
             <button type="button">Muokkaa</button>
           </a>
@@ -49,6 +57,7 @@
             <button type="button">Poista</button>
           </a>
         </td>
+        <td sec:authorize="!hasRole('ADMIN')">-</td>
       </tr>
     </table>
   </body>
