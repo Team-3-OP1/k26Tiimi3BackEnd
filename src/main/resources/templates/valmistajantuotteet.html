@@ -1,25 +1,20 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title th:text="'Valmistajan tuotteet  ' + ${valmistaja.name}">Valmistajan tuotteet</title>
+    <title th:text="'Valmistajan tuotteet – ' + ${valmistaja.name}">Valmistajan tuotteet</title>
   </head>
   <body>
-    <h1 th:text="${valmistaja.name} + '  tuotteet'">Valmistajan tuotteet</h1>
+    <h1 th:text="${valmistaja.name} + ' – tuotteet'">Valmistajan tuotteet</h1>
 
     <a th:href="@{/valmistajat}">Takaisin valmistajiin</a>
     |
     <a th:href="@{/homepage}">Etusivu</a>
 
-    <div th:if="${tuotteet.isEmpty()}" style="margin-top: 20px;">
-      <p>Tällä valmistajalla ei ole tuotteita.</p>
-    </div>
-
-    <table border="1" style="margin-top: 20px;" th:if="${!tuotteet.isEmpty()}">
+    <table border="1" style="margin-top: 20px;">
       <thead>
         <tr>
           <th>Nimi</th>
           <th>Tyyppi</th>
-          <th>Väri</th>
           <th>Koko</th>
           <th>Hinta</th>
           <th>Toiminnot</th>
@@ -28,15 +23,14 @@
       <tbody>
         <tr th:each="tuote : ${tuotteet}">
           <td th:text="${tuote.name}"></td>
-          <td th:text="${tuote.type}"></td>
-          <td th:text="${tuote.color}"></td>
-          <td th:text="${tuote.size}"></td>
+          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
           <td th:text="${tuote.price}"></td>
           <td>
             <a th:href="@{/edit/{id}(id=${tuote.id})}">Muokkaa</a>
             |
             <a th:href="@{/delete/{id}(id=${tuote.id})}"
-               onclick="return confirm('Haluatko varmasti poistaa tämän vaatteen?');">
+               onclick="return confirm('Haluatko varmasti poistaa tämän tuotteen?');">
               Poista
             </a>
           </td>

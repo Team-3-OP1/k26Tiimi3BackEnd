@@ -1,8 +1,6 @@
 <!doctype html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <title>Koiravaatekauppa</title>
   </head>
@@ -16,7 +14,7 @@
     </p>
 
     <div sec:authorize="hasRole('ADMIN')">
-      <a th:href="@{/addvaate}">Lisää uusi vaate</a>
+      <a th:href="@{/addvaate}">Lisää uusi tuote</a>
       |
       <a th:href="@{/addvalmistaja}">Lisää uusi valmistaja</a>
       |
@@ -27,46 +25,37 @@
 
     <a th:href="@{/valmistajat}">Katso valmistajat</a>
 
-    <h2>Added Vaatteet:</h2>
-    <div th:if="${vaatteet.isEmpty()}">
-      <p>No items added yet.</p>
-    </div>
+    <h2>Tuotteet:</h2>
 
-    <table border="1" th:if="${!vaatteet.isEmpty()}">
-      <tr>
-        <th>Nimi</th>
-        <th>Tyyppi</th>
-        <th>Väri</th>
-        <th>Koko</th>
-        <th>Hinta</th>
-        <th>Valmistaja</th>
-        <th>Toiminnot</th>
-      </tr>
-
-      <tr th:each="vaate : ${vaatteet}">
-        <td th:text="${vaate.name}"></td>
-        <td th:text="${vaate.type}"></td>
-        <td th:text="${vaate.color}"></td>
-        <td th:text="${vaate.size}"></td>
-        <td th:text="${vaate.price}"></td>
-        <td
-          th:text="${vaate.valmistaja != null ? vaate.valmistaja.name : 'Tuntematon'}"
-        ></td>
-        <td sec:authorize="hasRole('ADMIN')">
-          <a th:href="@{/edit/{id}(id=${vaate.id})}">
-            <button type="button">Muokkaa</button>
-          </a>
-          <a
-            th:href="@{/delete/{id}(id=${vaate.id})}"
-            onclick="
-              return confirm('Haluatko varmasti poistaa tämän vaatteen?');
-            "
-          >
-            <button type="button">Poista</button>
-          </a>
-        </td>
-        <td sec:authorize="!hasRole('ADMIN')">-</td>
-      </tr>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nimi</th>
+          <th>Tyyppi</th>
+          <th>Koko</th>
+          <th>Hinta</th>
+          <th>Valmistaja</th>
+          <th sec:authorize="hasRole('ADMIN')">Toiminnot</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="tuote : ${tuotteet}">
+          <td th:text="${tuote.name}"></td>
+          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
+          <td th:text="${tuote.price}"></td>
+          <td th:text="${tuote.valmistaja != null ? tuote.valmistaja.name : 'Tuntematon'}"></td>
+          <td sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/edit/{id}(id=${tuote.id})}">
+              <button type="button">Muokkaa</button>
+            </a>
+            <a th:href="@{/delete/{id}(id=${tuote.id})}"
+               onclick="return confirm('Haluatko varmasti poistaa tämän tuotteen?');">
+              <button type="button">Poista</button>
+            </a>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </body>
 </html>

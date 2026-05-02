@@ -16,7 +16,7 @@ public class HomepageController {
 
     @GetMapping("/homepage")
     public String showHomepage(Model model) {
-        model.addAttribute("vaatteet", repository.findAll());
+        model.addAttribute("tuotteet", repository.findAll());
         return "Homepage";
     }
 }

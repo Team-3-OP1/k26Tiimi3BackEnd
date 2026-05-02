@@ -7,36 +7,41 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import backend.team3.pro.Model.AppUser;
+import backend.team3.pro.Model.Tyyppi;
 import backend.team3.pro.Model.Valmistaja;
 import backend.team3.pro.Repository.AppUserRepository;
+import backend.team3.pro.Repository.TyyppiRepository;
 import backend.team3.pro.Repository.ValmistajaRepository;
 
 @SpringBootApplication
 public class ProApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ProApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ProApplication.class, args);
+    }
 
-	@Bean
-	CommandLineRunner initValmistajat(ValmistajaRepository valmistajaRepository) {
-		return args -> {
-			if (!valmistajaRepository.existsByName("Rukka")) {
-				valmistajaRepository.save(new Valmistaja("Rukka"));
-			}
-			if (!valmistajaRepository.existsByName("Luhta")) {
-				valmistajaRepository.save(new Valmistaja("Luhta"));
-			}
-		};
-	}
+    @Bean
+    CommandLineRunner initValmistajat(ValmistajaRepository valmistajaRepository,
+                                      TyyppiRepository tyyppiRepository) {
+        return args -> {
+            if (!valmistajaRepository.existsByName("Rukka"))
+                valmistajaRepository.save(new Valmistaja("Rukka"));
+            if (!valmistajaRepository.existsByName("Luhta"))
+                valmistajaRepository.save(new Valmistaja("Luhta"));
 
-	@Bean
-	CommandLineRunner initAdmin(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
-		return args -> {
-			if (!userRepository.existsByUsername("admin")) {
-				userRepository.save(new AppUser("admin", passwordEncoder.encode("admin123"), "ADMIN"));
-			}
-		};
-	}
+            // Tuotetyypit
+            if (!tyyppiRepository.existsByNimi("vaate"))
+                tyyppiRepository.save(new Tyyppi("vaate"));
+            if (!tyyppiRepository.existsByNimi("lelu"))
+                tyyppiRepository.save(new Tyyppi("lelu"));
+        };
+    }
 
+    @Bean
+    CommandLineRunner initAdmin(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+        return args -> {
+            if (!userRepository.existsByUsername("admin"))
+                userRepository.save(new AppUser("admin", passwordEncoder.encode("admin123"), "ADMIN"));
+        };
+    }
 }

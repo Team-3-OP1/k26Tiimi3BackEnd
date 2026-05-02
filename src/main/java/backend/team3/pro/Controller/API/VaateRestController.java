@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import backend.team3.pro.Model.Vaate;
 import backend.team3.pro.Repository.VaateRepository;
 
-@CrossOrigin(origins = "http://localhost:5173") // Salli CORS-pyynnöt localhost:5173:sta
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class VaateRestController {
 
@@ -33,12 +33,11 @@ public class VaateRestController {
 
     @GetMapping("/api/vaatteet")
     public @ResponseBody List<Vaate> vaateListRest() {
-        return (List<Vaate>) vaateRepository.findAllByType("Vaate");
+        return vaateRepository.findAllByTyyppi_Nimi("vaate");
     }
 
     @GetMapping("/api/valmistaja/{valmistajaId}/vaatteet")
     public @ResponseBody List<Vaate> findVaatteetByValmistajaId(@PathVariable("valmistajaId") Long valmistajaId) {
-        return (List<Vaate>) vaateRepository.findAllByValmistaja_Id(valmistajaId);
+        return vaateRepository.findAllByValmistaja_Id(valmistajaId);
     }
-
 }
