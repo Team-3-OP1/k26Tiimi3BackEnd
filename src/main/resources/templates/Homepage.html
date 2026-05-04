@@ -1,6 +1,8 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <head>
     <title>Koiravaatekauppa</title>
   </head>
@@ -24,7 +26,13 @@
     </div>
 
     <a th:href="@{/valmistajat}">Katso valmistajat</a>
+    <br /><br />
 
+    <a th:href="@{/saatavuus}">Katso tuotteiden saatavuus</a>
+    |
+    <a th:href="@{/varasto}">Katso varasto</a>
+    |
+    <a th:href="@{/paivitavarasto}">Päivitä varastomääriä</a>
     <h2>Tuotteet:</h2>
 
     <table border="1">
@@ -34,6 +42,7 @@
           <th>Tyyppi</th>
           <th>Koko</th>
           <th>Hinta</th>
+          <th>Varastossa</th>
           <th>Valmistaja</th>
           <th sec:authorize="hasRole('ADMIN')">Toiminnot</th>
         </tr>
@@ -44,15 +53,35 @@
           <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
           <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
           <td th:text="${tuote.price}"></td>
-          <td th:text="${tuote.valmistaja != null ? tuote.valmistaja.name : 'Tuntematon'}"></td>
+          <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
+          <td
+            th:text="${tuote.valmistaja != null ? tuote.valmistaja.name : 'Tuntematon'}"
+          ></td>
           <td sec:authorize="hasRole('ADMIN')">
             <a th:href="@{/edit/{id}(id=${tuote.id})}">
               <button type="button">Muokkaa</button>
             </a>
-            <a th:href="@{/delete/{id}(id=${tuote.id})}"
-               onclick="return confirm('Haluatko varmasti poistaa tämän tuotteen?');">
+
+            <form
+              th:action="@{/toimita/{id}(id=${tuote.id})}"
+              method="post"
+              style="display: inline"
+            >
+              <button type="submit" th:disabled="${tuote.varastoMaara <= 0}">
+                Toimita asiakkaalle
+              </button>
+            </form>
+
+            <a
+              th:href="@{/delete/{id}(id=${tuote.id})}"
+              onclick="
+                return confirm('Haluatko varmasti poistaa tämän tuotteen?');
+              "
+            >
               <button type="button">Poista</button>
             </a>
+
+            <span th:if="${tuote.varastoMaara <= 0}"> Ei saatavilla </span>
           </td>
         </tr>
       </tbody>

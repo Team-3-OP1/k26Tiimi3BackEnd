@@ -3,7 +3,9 @@
   <head>
     <title>Muokkaa tuotetta</title>
     <style>
-      .error { color: red; }
+      .error {
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -17,12 +19,19 @@
       <br /><br />
 
       <label>Tyyppi:</label>
-      <select name="tyyppiId" id="tyyppiSelect" onchange="paivitaKoko()" required>
+      <select
+        name="tyyppiId"
+        id="tyyppiSelect"
+        onchange="paivitaKoko()"
+        required
+      >
         <option value="" disabled>Valitse tyyppi</option>
-        <option th:each="t : ${tyypit}"
-                th:value="${t.id}"
-                th:selected="${vaate.tyyppi != null and vaate.tyyppi.id == t.id}"
-                th:text="${t.nimi}"></option>
+        <option
+          th:each="t : ${tyypit}"
+          th:value="${t.id}"
+          th:selected="${vaate.tyyppi != null and vaate.tyyppi.id == t.id}"
+          th:text="${t.nimi}"
+        ></option>
       </select>
       <br /><br />
 
@@ -30,7 +39,11 @@
         <label>Koko (vain vaatteille):</label>
         <select th:field="*{koko}">
           <option value="">-- Ei kokoa --</option>
-          <option th:each="k : ${kokovalinnat}" th:value="${k}" th:text="${k}"></option>
+          <option
+            th:each="k : ${kokovalinnat}"
+            th:value="${k}"
+            th:text="${k}"
+          ></option>
         </select>
         <div class="error" th:if="${kokoVirhe}" th:text="${kokoVirhe}"></div>
         <br /><br />
@@ -39,11 +52,23 @@
       <label>Hinta:</label>
       <input type="number" step="0.01" th:field="*{price}" />
       <br /><br />
+      <label>Varastomäärä:</label>
+      <input type="number" min="0" th:field="*{varastoMaara}" />
+      <div
+        class="error"
+        th:if="${#fields.hasErrors('varastoMaara')}"
+        th:errors="*{varastoMaara}"
+      ></div>
+      <br /><br />
 
       <label>Valmistaja:</label>
       <select th:field="*{valmistaja.id}" required>
         <option value="" disabled>Valitse valmistaja</option>
-        <option th:each="v : ${valmistajat}" th:value="${v.id}" th:text="${v.name}"></option>
+        <option
+          th:each="v : ${valmistajat}"
+          th:value="${v.id}"
+          th:text="${v.name}"
+        ></option>
       </select>
       <br /><br />
 
@@ -54,14 +79,16 @@
     <a th:href="@{/homepage}">Takaisin etusivulle</a>
 
     <script th:inline="javascript">
-      const nykyinenTyyppi = /*[[${vaate.tyyppi != null ? vaate.tyyppi.nimi : ''}]]*/ '';
-      document.getElementById('kokoRivi').style.display =
-        nykyinenTyyppi.toLowerCase() === 'vaate' ? 'block' : 'none';
+      const nykyinenTyyppi =
+        /*[[${vaate.tyyppi != null ? vaate.tyyppi.nimi : ''}]]*/ "";
+      document.getElementById("kokoRivi").style.display =
+        nykyinenTyyppi.toLowerCase() === "vaate" ? "block" : "none";
 
       function paivitaKoko() {
-        const select = document.getElementById('tyyppiSelect');
+        const select = document.getElementById("tyyppiSelect");
         const teksti = select.options[select.selectedIndex].text.toLowerCase();
-        document.getElementById('kokoRivi').style.display = teksti === 'vaate' ? 'block' : 'none';
+        document.getElementById("kokoRivi").style.display =
+          teksti === "vaate" ? "block" : "none";
       }
     </script>
   </body>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Tuotteiden saatavuus</title>
+  </head>
+  <body>
+    <h1>Tuotteiden saatavuus</h1>
+
+    <p>
+      Tällä sivulla näet, kuinka paljon jokaista tuotetta on kaupassa saatavilla.
+    </p>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nimi</th>
+          <th>Tyyppi</th>
+          <th>Koko</th>
+          <th>Hinta</th>
+          <th>Saatavilla</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="tuote : ${tuotteet}">
+          <td th:text="${tuote.name}"></td>
+          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
+          <td th:text="${tuote.price}"></td>
+          <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br />
+
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>

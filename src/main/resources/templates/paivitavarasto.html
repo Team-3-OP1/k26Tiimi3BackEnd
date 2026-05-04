@@ -1,0 +1,54 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Päivitä varasto</title>
+  </head>
+  <body>
+    <h1>Päivitä tuotteiden varastomäärää</h1>
+
+    <p>
+      Tällä sivulla voit päivittää valitun tuotteen määrän kaupan varastoon.
+    </p>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nimi</th>
+          <th>Tyyppi</th>
+          <th>Koko</th>
+          <th>Nykyinen määrä</th>
+          <th>Uusi määrä</th>
+          <th>Toiminto</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="tuote : ${tuotteet}">
+          <td th:text="${tuote.name}"></td>
+          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
+          <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
+
+          <td>
+            <form th:action="@{/paivitavarasto/{id}(id=${tuote.id})}" method="post">
+              <input
+                type="number"
+                name="varastoMaara"
+                min="0"
+                th:value="${tuote.varastoMaara}"
+              />
+
+              <button type="submit">
+                Päivitä
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br />
+
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>

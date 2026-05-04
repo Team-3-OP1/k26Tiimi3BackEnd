@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Varasto</title>
+  </head>
+  <body>
+    <h1>Varasto</h1>
+
+    <p>
+      Tällä sivulla näet tuotteiden ajantasaisen varastomäärän.
+      Kun tuote toimitetaan asiakkaalle, määrä vähenee yhdellä.
+    </p>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Nimi</th>
+          <th>Tyyppi</th>
+          <th>Koko</th>
+          <th>Varastossa</th>
+          <th>Toiminto</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:each="tuote : ${tuotteet}">
+          <td th:text="${tuote.name}"></td>
+          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
+          <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
+
+          <td>
+            <form th:action="@{/toimita/{id}(id=${tuote.id})}" method="post">
+              <button type="submit" th:disabled="${tuote.varastoMaara <= 0}">
+                Toimita asiakkaalle
+              </button>
+            </form>
+
+            <span th:if="${tuote.varastoMaara <= 0}">
+              Ei saatavilla
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br />
+
+    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  </body>
+</html>

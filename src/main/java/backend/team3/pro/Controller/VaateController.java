@@ -24,8 +24,8 @@ public class VaateController {
     private final TyyppiRepository tyyppiRepository;
 
     public VaateController(VaateRepository vaateRepository,
-                           ValmistajaRepository valmistajaRepository,
-                           TyyppiRepository tyyppiRepository) {
+            ValmistajaRepository valmistajaRepository,
+            TyyppiRepository tyyppiRepository) {
         this.vaateRepository = vaateRepository;
         this.valmistajaRepository = valmistajaRepository;
         this.tyyppiRepository = tyyppiRepository;
@@ -46,14 +46,13 @@ public class VaateController {
 
     @PostMapping("/tallenna")
     public String tallenna(@Valid Vaate vaate,
-                           BindingResult bindingResult,
-                           @RequestParam(value = "tyyppiId", required = false) Long tyyppiId,
-                           @RequestParam(value = "valmistaja.id", required = false) Long valmistajaid,
-                           Model model) {
+            BindingResult bindingResult,
+            @RequestParam(value = "tyyppiId", required = false) Long tyyppiId,
+            @RequestParam(value = "valmistaja.id", required = false) Long valmistajaId,
+            Model model) {
 
         boolean virhe = false;
 
-        // Aseta tyyppi
         if (tyyppiId != null) {
             tyyppiRepository.findById(tyyppiId).ifPresent(vaate::setTyyppi);
         } else {
@@ -61,9 +60,8 @@ public class VaateController {
             virhe = true;
         }
 
-        // Aseta valmistaja
-        if (valmistajaid != null) {
-            valmistajaRepository.findById(valmistajaid).ifPresent(vaate::setValmistaja);
+        if (valmistajaId != null) {
+            valmistajaRepository.findById(valmistajaId).ifPresent(vaate::setValmistaja);
         } else {
             model.addAttribute("valmistajaVirhe", "Valmistaja on pakollinen");
             virhe = true;
@@ -71,29 +69,86 @@ public class VaateController {
 
         if (bindingResult.hasErrors() || virhe) {
             lisaaLomakeAtribuutit(model);
-            return "addvaate";
+
+            if (vaate.getId() == null) {
+                return "addvaate";
+            } else {
+                return "editvaate";
+            }
         }
 
-        // Jos tyyppi on vaate, koko on pakollinen
         Tyyppi tyyppi = vaate.getTyyppi();
+
         if (tyyppi != null && "vaate".equalsIgnoreCase(tyyppi.getNimi()) && vaate.getKoko() == null) {
             model.addAttribute("kokoVirhe", "Koko on pakollinen vaatteille (S, M tai L)");
             lisaaLomakeAtribuutit(model);
-            return "addvaate";
+
+            if (vaate.getId() == null) {
+                return "addvaate";
+            } else {
+                return "editvaate";
+            }
         }
 
-        // Jos lelu, poistetaan koko
-        if (tyyppi != null && "lelu".equalsIgnoreCase(tyyppi.getNimi()))
+        if (tyyppi != null && "lelu".equalsIgnoreCase(tyyppi.getNimi())) {
             vaate.setKoko(null);
+        }
 
         vaateRepository.save(vaate);
         return "redirect:/homepage";
     }
 
+    @PostMapping("/toimita/{id}")
+    public String toimitaTuote(@PathVariable("id") Long id) {
+        Vaate vaate = vaateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tuotetta ei löydy annetulla id:llä"));
+
+        if (vaate.getVarastoMaara() > 0) {
+            vaate.setVarastoMaara(vaate.getVarastoMaara() - 1);
+            vaateRepository.save(vaate);
+        }
+
+        return "redirect:/varasto";
+    }
+
+    @GetMapping("/saatavuus")
+    public String naytaSaatavuus(Model model) {
+        model.addAttribute("tuotteet", vaateRepository.findAll());
+        return "saatavuus";
+    }
+
+    @GetMapping("/varasto")
+    public String naytaVarasto(Model model) {
+        model.addAttribute("tuotteet", vaateRepository.findAll());
+        return "varasto";
+    }
+
+    @GetMapping("/paivitavarasto")
+    public String naytaVarastonPaivitys(Model model) {
+        model.addAttribute("tuotteet", vaateRepository.findAll());
+        return "paivitavarasto";
+    }
+
+    @PostMapping("/paivitavarasto/{id}")
+    public String paivitaVarasto(@PathVariable("id") Long id,
+            @RequestParam("varastoMaara") int varastoMaara) {
+        Vaate vaate = vaateRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Tuotetta ei löydy annetulla id:llä"));
+
+        if (varastoMaara >= 0) {
+            vaate.setVarastoMaara(varastoMaara);
+            vaateRepository.save(vaate);
+        }
+
+        return "redirect:/paivitavarasto";
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteVaate(@PathVariable("id") Long id) {
-        if (!vaateRepository.existsById(id))
-            throw new IllegalArgumentException("Vaate ei loydy annetulla id:lla");
+        if (!vaateRepository.existsById(id)) {
+            throw new IllegalArgumentException("Vaate ei löydy annetulla id:llä");
+        }
+
         vaateRepository.deleteById(id);
         return "redirect:/homepage";
     }
@@ -101,7 +156,8 @@ public class VaateController {
     @GetMapping("/edit/{id}")
     public String editVaate(@PathVariable("id") Long id, Model model) {
         Vaate vaate = vaateRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vaate ei loydy annetulla id:lla"));
+                .orElseThrow(() -> new IllegalArgumentException("Vaate ei löydy annetulla id:llä"));
+
         model.addAttribute("vaate", vaate);
         lisaaLomakeAtribuutit(model);
         return "editvaate";
