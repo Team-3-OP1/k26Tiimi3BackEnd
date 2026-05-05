@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import backend.team3.pro.Model.AppUser;
+import backend.team3.pro.Model.Role;
 import backend.team3.pro.Model.Tyyppi;
 import backend.team3.pro.Model.Valmistaja;
 import backend.team3.pro.Repository.AppUserRepository;
+import backend.team3.pro.Repository.RoleRepository;
 import backend.team3.pro.Repository.TyyppiRepository;
 import backend.team3.pro.Repository.ValmistajaRepository;
 
@@ -38,10 +40,21 @@ public class ProApplication {
     }
 
     @Bean
-    CommandLineRunner initAdmin(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    CommandLineRunner initSecurity(AppUserRepository userRepository,
+                                   RoleRepository roleRepository,
+                                   PasswordEncoder passwordEncoder) {
         return args -> {
-            if (!userRepository.existsByUsername("admin"))
-                userRepository.save(new AppUser("admin", passwordEncoder.encode("admin123"), "ADMIN"));
+            Role adminRole = roleRepository.findByName("ADMIN")
+                    .orElseGet(() -> roleRepository.save(new Role("ADMIN")));
+
+            roleRepository.findByName("USER")
+                    .orElseGet(() -> roleRepository.save(new Role("USER")));
+
+            if (!userRepository.existsByUsername("admin")) {
+                AppUser admin = new AppUser("admin", passwordEncoder.encode("admin123"));
+                admin.addRole(adminRole);
+                userRepository.save(admin);
+            }
         };
     }
 }

@@ -26,7 +26,9 @@ public class AppUserDetailsService implements UserDetailsService {
         var appUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User ei loydy"));
 
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + appUser.getRole()));
+        List<GrantedAuthority> authorities = appUser.getRoles().stream()
+                .<GrantedAuthority>map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .toList();
 
         return new User(appUser.getUsername(), appUser.getPassword(), authorities);
     }

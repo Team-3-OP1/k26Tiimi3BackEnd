@@ -8,16 +8,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import backend.team3.pro.Model.AppUser;
+import backend.team3.pro.Model.Role;
 import backend.team3.pro.Repository.AppUserRepository;
+import backend.team3.pro.Repository.RoleRepository;
 
 @Controller
 public class AuthController {
 
     private final AppUserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthController(AppUserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(AppUserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -48,7 +54,13 @@ public class AuthController {
             return "register";
         }
 
-        userRepository.save(new AppUser(username, passwordEncoder.encode(password), "USER"));
+        Role userRole = roleRepository.findByName("USER")
+                .orElseGet(() -> roleRepository.save(new Role("USER")));
+
+        AppUser user = new AppUser(username, passwordEncoder.encode(password));
+        user.addRole(userRole);
+        userRepository.save(user);
+
         return "redirect:/login?registered";
     }
 }
