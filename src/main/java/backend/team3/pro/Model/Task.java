@@ -15,19 +15,23 @@ import jakarta.persistence.Table;
 @Table(name = "tasks")
 public class Task {
 
+    // Database-generated primary key for each task.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Every task must have a title.
     @Column(nullable = false)
     private String title;
 
     private String description;
 
+    // Store the enum value as text in the database, not as a number.
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TaskStatus status = TaskStatus.OPEN;
 
+    // Many tasks can be assigned to one user.
     @ManyToOne
     @JoinColumn(name = "assigned_user_id")
     private AppUser assignedUser;

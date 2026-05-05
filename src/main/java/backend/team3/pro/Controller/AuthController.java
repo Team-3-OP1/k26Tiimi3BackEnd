@@ -54,6 +54,7 @@ public class AuthController {
             return "register";
         }
 
+        // New registered users receive the USER role by default.
         Role userRole = roleRepository.findByName("USER")
                 .orElseGet(() -> roleRepository.save(new Role("USER")));
 

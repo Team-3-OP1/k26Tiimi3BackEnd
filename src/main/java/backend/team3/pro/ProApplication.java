@@ -26,12 +26,13 @@ public class ProApplication {
     CommandLineRunner initValmistajat(ValmistajaRepository valmistajaRepository,
                                       TyyppiRepository tyyppiRepository) {
         return args -> {
+            // Add basic manufacturers if they do not already exist.
             if (!valmistajaRepository.existsByName("Rukka"))
                 valmistajaRepository.save(new Valmistaja("Rukka"));
             if (!valmistajaRepository.existsByName("Luhta"))
                 valmistajaRepository.save(new Valmistaja("Luhta"));
 
-            // Tuotetyypit
+            // Add basic product types if they do not already exist.
             if (!tyyppiRepository.existsByNimi("vaate"))
                 tyyppiRepository.save(new Tyyppi("vaate"));
             if (!tyyppiRepository.existsByNimi("lelu"))
@@ -44,12 +45,14 @@ public class ProApplication {
                                    RoleRepository roleRepository,
                                    PasswordEncoder passwordEncoder) {
         return args -> {
+            // Create default roles used by Spring Security.
             Role adminRole = roleRepository.findByName("ADMIN")
                     .orElseGet(() -> roleRepository.save(new Role("ADMIN")));
 
             roleRepository.findByName("USER")
                     .orElseGet(() -> roleRepository.save(new Role("USER")));
 
+            // Create the first admin user only if it does not already exist.
             if (!userRepository.existsByUsername("admin")) {
                 AppUser admin = new AppUser("admin", passwordEncoder.encode("admin123"));
                 admin.addRole(adminRole);

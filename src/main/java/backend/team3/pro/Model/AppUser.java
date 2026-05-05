@@ -18,16 +18,19 @@ import jakarta.persistence.Table;
 @Table(name = "app_users")
 public class AppUser {
 
+    // Database-generated primary key for each user.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Usernames must be unique because they are used for login.
     @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
+    // One user can have many roles, and one role can belong to many users.
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "app_user_roles",

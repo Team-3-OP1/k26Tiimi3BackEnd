@@ -11,10 +11,12 @@ import jakarta.persistence.Table;
 @Table(name = "roles")
 public class Role {
 
+    // Database-generated primary key for each role.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Role name used by Spring Security, for example ADMIN or USER.
     @Column(nullable = false, unique = true)
     private String name;
 
