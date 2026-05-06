@@ -1,90 +1,76 @@
 <!doctype html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Koiravaatekauppa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
-  <body>
-    <h1>Koiravaatekauppa</h1>
+  <body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark px-4 mb-4">
+      <span class="navbar-brand fw-bold">Koiravaatekauppa</span>
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-white small">Kirjautunut: <strong sec:authentication="name"></strong></span>
+        <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">Kirjaudu ulos</a>
+      </div>
+    </nav>
 
-    <p>
-      Kirjautunut: <span sec:authentication="name"></span>
-      |
-      <a th:href="@{/logout}">Kirjaudu ulos</a>
-    </p>
+    <div class="container">
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <div sec:authorize="hasRole('ADMIN')" class="d-flex flex-wrap gap-2">
+          <a th:href="@{/addvaate}" class="btn btn-primary btn-sm">+ Lisää tuote</a>
+          <a th:href="@{/addvalmistaja}" class="btn btn-secondary btn-sm">+ Lisää valmistaja</a>
+          <a th:href="@{/addasiakas}" class="btn btn-secondary btn-sm">+ Lisää asiakas</a>
+          <a th:href="@{/asiakkaat}" class="btn btn-outline-secondary btn-sm">Asiakkaat</a>
+        </div>
+        <a th:href="@{/valmistajat}" class="btn btn-outline-dark btn-sm">Valmistajat</a>
+        <a th:href="@{/saatavuus}" class="btn btn-outline-info btn-sm">Saatavuus</a>
+        <a th:href="@{/varasto}" class="btn btn-outline-info btn-sm">Varasto</a>
+        <a th:href="@{/paivitavarasto}" class="btn btn-outline-warning btn-sm">Päivitä varasto</a>
+      </div>
 
-    <div sec:authorize="hasRole('ADMIN')">
-      <a th:href="@{/addvaate}">Lisää uusi tuote</a>
-      |
-      <a th:href="@{/addvalmistaja}">Lisää uusi valmistaja</a>
-      |
-      <a th:href="@{/addasiakas}">Lisää uusi asiakas</a>
-      |
-      <a th:href="@{/asiakkaat}">Katso asiakkaat</a>
+      <h4 class="mb-3">Tuotteet</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white">
+          <thead class="table-dark">
+            <tr>
+              <th>Nimi</th>
+              <th>Tyyppi</th>
+              <th>Koko</th>
+              <th>Hinta</th>
+              <th>Varastossa</th>
+              <th>Valmistaja</th>
+              <th sec:authorize="hasRole('ADMIN')">Toiminnot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="tuote : ${tuotteet}">
+              <td th:text="${tuote.name}"></td>
+              <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+              <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
+              <td th:text="${tuote.price + ' €'}"></td>
+              <td>
+                <span th:text="${tuote.varastoMaara + ' kpl'}"></span>
+                <span th:if="${tuote.varastoMaara <= 0}" class="badge bg-danger ms-1">Loppu</span>
+              </td>
+              <td th:text="${tuote.valmistaja != null ? tuote.valmistaja.name : 'Tuntematon'}"></td>
+              <td sec:authorize="hasRole('ADMIN')">
+                <div class="d-flex flex-wrap gap-1">
+                  <a th:href="@{/edit/{id}(id=${tuote.id})}" class="btn btn-warning btn-sm">Muokkaa</a>
+                  <form th:action="@{/toimita/{id}(id=${tuote.id})}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-success btn-sm" th:disabled="${tuote.varastoMaara <= 0}">Toimita</button>
+                  </form>
+                  <a th:href="@{/delete/{id}(id=${tuote.id})}"
+                     onclick="return confirm('Haluatko varmasti poistaa tämän tuotteen?');"
+                     class="btn btn-danger btn-sm">Poista</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <a th:href="@{/valmistajat}">Katso valmistajat</a>
-    <br /><br />
-
-    <a th:href="@{/saatavuus}">Katso tuotteiden saatavuus</a>
-    |
-    <a th:href="@{/varasto}">Katso varasto</a>
-    |
-    <a th:href="@{/paivitavarasto}">Päivitä varastomääriä</a>
-    <h2>Tuotteet:</h2>
-
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Nimi</th>
-          <th>Tyyppi</th>
-          <th>Koko</th>
-          <th>Hinta</th>
-          <th>Varastossa</th>
-          <th>Valmistaja</th>
-          <th sec:authorize="hasRole('ADMIN')">Toiminnot</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="tuote : ${tuotteet}">
-          <td th:text="${tuote.name}"></td>
-          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
-          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
-          <td th:text="${tuote.price}"></td>
-          <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
-          <td
-            th:text="${tuote.valmistaja != null ? tuote.valmistaja.name : 'Tuntematon'}"
-          ></td>
-          <td sec:authorize="hasRole('ADMIN')">
-            <a th:href="@{/edit/{id}(id=${tuote.id})}">
-              <button type="button">Muokkaa</button>
-            </a>
-
-            <form
-              th:action="@{/toimita/{id}(id=${tuote.id})}"
-              method="post"
-              style="display: inline"
-            >
-              <button type="submit" th:disabled="${tuote.varastoMaara <= 0}">
-                Toimita asiakkaalle
-              </button>
-            </form>
-
-            <a
-              th:href="@{/delete/{id}(id=${tuote.id})}"
-              onclick="
-                return confirm('Haluatko varmasti poistaa tämän tuotteen?');
-              "
-            >
-              <button type="button">Poista</button>
-            </a>
-
-            <span th:if="${tuote.varastoMaara <= 0}"> Ei saatavilla </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

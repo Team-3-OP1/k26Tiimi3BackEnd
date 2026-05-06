@@ -1,54 +1,45 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Päivitä varasto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
-  <body>
-    <h1>Päivitä tuotteiden varastomäärää</h1>
-
-    <p>
-      Tällä sivulla voit päivittää valitun tuotteen määrän kaupan varastoon.
-    </p>
-
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Nimi</th>
-          <th>Tyyppi</th>
-          <th>Koko</th>
-          <th>Nykyinen määrä</th>
-          <th>Uusi määrä</th>
-          <th>Toiminto</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr th:each="tuote : ${tuotteet}">
-          <td th:text="${tuote.name}"></td>
-          <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
-          <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
-          <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
-
-          <td>
-            <form th:action="@{/paivitavarasto/{id}(id=${tuote.id})}" method="post">
-              <input
-                type="number"
-                name="varastoMaara"
-                min="0"
-                th:value="${tuote.varastoMaara}"
-              />
-
-              <button type="submit">
-                Päivitä
-              </button>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <br />
-
-    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+  <body class="bg-light">
+    <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Päivitä varastomäärää</h3>
+        <a th:href="@{/homepage}" class="btn btn-outline-secondary btn-sm">Etusivu</a>
+      </div>
+      <p class="text-muted">Päivitä valitun tuotteen määrä kaupan varastoon.</p>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover bg-white">
+          <thead class="table-dark">
+            <tr>
+              <th>Nimi</th>
+              <th>Tyyppi</th>
+              <th>Koko</th>
+              <th>Nykyinen määrä</th>
+              <th>Uusi määrä</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="tuote : ${tuotteet}">
+              <td th:text="${tuote.name}"></td>
+              <td th:text="${tuote.tyyppi != null ? tuote.tyyppi.nimi : '-'}"></td>
+              <td th:text="${tuote.koko != null ? tuote.koko : '-'}"></td>
+              <td th:text="${tuote.varastoMaara + ' kpl'}"></td>
+              <td>
+                <form th:action="@{/paivitavarasto/{id}(id=${tuote.id})}" method="post" class="d-flex gap-2">
+                  <input type="number" name="varastoMaara" min="0" th:value="${tuote.varastoMaara}" class="form-control form-control-sm" style="width:90px" />
+                  <button type="submit" class="btn btn-primary btn-sm">Päivitä</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </body>
 </html>

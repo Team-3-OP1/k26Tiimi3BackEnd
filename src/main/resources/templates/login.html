@@ -1,29 +1,30 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Log in</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kirjaudu sisään</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
-  <body>
-    <h1>Log in</h1>
-
-    <p th:if="${param.error}" style="color: red">Wrong credentials</p>
-    <p th:if="${param.logout}" style="color: green">You have been logged out</p>
-    <p th:if="${param.registered}" style="color: green">Account created, you can now log in</p>
-
-    <form th:action="@{/login}" method="post">
-      <label>Username:</label>
-      <input type="text" name="username" />
-      <br /><br />
-
-      <label>Password:</label>
-      <input type="password" name="password" />
-      <br /><br />
-
-      <button type="submit">Login</button>
-    </form>
-
-    <p>
-      <a th:href="@{/register}">Register</a>
-    </p>
+  <body class="bg-light d-flex align-items-center justify-content-center" style="min-height:100vh">
+    <div class="card shadow p-4" style="width:100%;max-width:400px">
+      <h3 class="card-title text-center mb-4">Koiravaatekauppa</h3>
+      <div th:if="${param.error}" class="alert alert-danger">Väärä käyttäjätunnus tai salasana</div>
+      <div th:if="${param.logout}" class="alert alert-success">Olet kirjautunut ulos</div>
+      <div th:if="${param.registered}" class="alert alert-success">Tili luotu, voit nyt kirjautua sisään</div>
+      <form th:action="@{/login}" method="post">
+        <div class="mb-3">
+          <label class="form-label">Käyttäjätunnus</label>
+          <input type="text" name="username" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Salasana</label>
+          <input type="password" name="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Kirjaudu</button>
+      </form>
+      <hr />
+      <p class="text-center mb-0"><a th:href="@{/register}">Luo uusi tili</a></p>
+    </div>
   </body>
 </html>

@@ -1,41 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <title>Lisää uusi asiakas</title>
-    <style>
-      .error {
-        color: red;
-      }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lisää asiakas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   </head>
-  <body>
-    <h1>Lisää uusi asiakas</h1>
-
-    <form th:action="@{/saveasiakas}" th:object="${asiakas}" method="post">
-      <div>
-        <label>Etunimi:</label>
-        <input type="text" th:field="*{etunimi}" />
-        <div
-          class="error"
-          th:if="${#fields.hasErrors('etunimi')}"
-          th:errors="*{etunimi}"
-        ></div>
+  <body class="bg-light">
+    <div class="container mt-4" style="max-width:500px">
+      <h3 class="mb-4">Lisää uusi asiakas</h3>
+      <div class="card p-4 shadow-sm">
+        <form th:action="@{/saveasiakas}" th:object="${asiakas}" method="post">
+          <div class="mb-3">
+            <label class="form-label">Etunimi</label>
+            <input type="text" th:field="*{etunimi}" class="form-control" />
+            <div class="text-danger small" th:if="${#fields.hasErrors('etunimi')}" th:errors="*{etunimi}"></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sukunimi</label>
+            <input type="text" th:field="*{sukunimi}" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Sähköposti</label>
+            <input type="email" th:field="*{sposti}" class="form-control" required />
+          </div>
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Tallenna</button>
+            <a th:href="@{/homepage}" class="btn btn-outline-secondary">Peruuta</a>
+          </div>
+        </form>
       </div>
-      <br />
-      <div>
-        <label>Sukunimi:</label>
-        <input type="text" th:field="*{sukunimi}" />
-      </div>
-      <br />
-      <div>
-        <label>Sähköposti:</label>
-        <input type="email" th:field="*{sposti}" required />
-      </div>
-      <br />
-      <input type="submit" value="Tallenna asiakas" />
-    </form>
-
-    <br />
-    <a th:href="@{/homepage}">Takaisin etusivulle</a>
+    </div>
   </body>
 </html>
