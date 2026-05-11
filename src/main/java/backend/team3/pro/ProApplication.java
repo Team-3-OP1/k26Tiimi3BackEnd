@@ -35,6 +35,8 @@ public class ProApplication {
             // Add basic product types if they do not already exist.
             if (!tyyppiRepository.existsByNimi("vaate"))
                 tyyppiRepository.save(new Tyyppi("vaate"));
+            if (!tyyppiRepository.existsByNimi("ruoka"))
+                tyyppiRepository.save(new Tyyppi("ruoka"));
             if (!tyyppiRepository.existsByNimi("lelu"))
                 tyyppiRepository.save(new Tyyppi("lelu"));
         };

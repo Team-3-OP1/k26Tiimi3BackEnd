@@ -90,7 +90,7 @@ public class VaateController {
             }
         }
 
-        if (tyyppi != null && "lelu".equalsIgnoreCase(tyyppi.getNimi())) {
+        if (tyyppi != null && !"vaate".equalsIgnoreCase(tyyppi.getNimi())) {
             vaate.setKoko(null);
         }
 

@@ -12,7 +12,7 @@ public class Tyyppi {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nimi; // "vaate" tai "lelu"
+    private String nimi; // esimerkiksi "vaate", "ruoka" tai "lelu"
 
     public Tyyppi() {}
 
