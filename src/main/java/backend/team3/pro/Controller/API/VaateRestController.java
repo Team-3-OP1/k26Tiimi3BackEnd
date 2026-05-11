@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import backend.team3.pro.Model.Vaate;
 import backend.team3.pro.Repository.VaateRepository;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://frontendtiimi3-opt3frontend.2.rahtiapp.fi/")
 @RestController
 public class VaateRestController {
 
