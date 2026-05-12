@@ -1,5 +1,7 @@
 package backend.team3.pro.Security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,7 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -21,17 +27,30 @@ public class SecurityConfig {
         }
 
         @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        public org.springframework.security.authentication.AuthenticationManager authenticationManager(
+                        org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration authConfig)
+                        throws Exception {
+                return authConfig.getAuthenticationManager();
+        }
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter)
+                        throws Exception {
                 http
-                                // The H2 console needs CSRF disabled and same-origin frames to work in the browser.
-                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                                // The H2 console and API endpoints need CSRF disabled for API clients to
+                                // interact without a browser CSRF token.
+                                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/**"))
                                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(auth -> auth
                                                 // Login, registration, and the H2 console are available without login.
                                                 .requestMatchers("/login", "/register", "/h2-console/**").permitAll()
 
                                                 // Public API GET requests can be used without authentication.
                                                 .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                                                // Allow unauthenticated POSTs for authentication endpoints
+                                                // (login/register).
+                                                .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 
                                                 // Product management pages are restricted to ADMIN users.
                                                 .requestMatchers("/addvaate", "/addvalmistaja", "/tallenna",
@@ -57,6 +76,31 @@ public class SecurityConfig {
                                                 .logoutSuccessUrl("/login?logout")
                                                 .permitAll());
 
+                // Add JWT authentication filter so API requests carrying a Bearer token are
+                // authorized.
+                http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
                 return http.build();
+        }
+
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(List.of(
+                                "https://frontendtiimi3-opt3frontend.2.rahtiapp.fi",
+                                "http://localhost:5173"));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(List.of("*"));
+                config.setAllowCredentials(true);
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", config);
+                return source;
+        }
+
+        @Bean
+        public JwtAuthenticationFilter jwtAuthenticationFilter(JwtUtil jwtUtil,
+                        AppUserDetailsService userDetailsService) {
+                return new JwtAuthenticationFilter(jwtUtil, userDetailsService);
         }
 }
