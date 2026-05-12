@@ -19,16 +19,19 @@ public class Asiakas {
     private String etunimi;
     private String sukunimi;
     private String sposti;
+    private String username;
 
     
 
     public Asiakas() {
     }
 
-    public Asiakas(String etunimi, String sukunimi, String sposti) {
+    public Asiakas(String etunimi, String sukunimi, String sposti, String username) {
         this.etunimi = etunimi;
         this.sukunimi = sukunimi;
         this.sposti = sposti;
+        this.username = username;
+
     }
 
     public Long getId() {
@@ -62,6 +65,16 @@ public class Asiakas {
     public void setSposti(String sposti) {
         this.sposti = sposti;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
 
     
 

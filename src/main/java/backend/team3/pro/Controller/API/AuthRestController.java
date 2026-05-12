@@ -57,7 +57,6 @@ public class AuthRestController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError("Username already in use"));
         }
 
-        // Validate customer details (firstName, lastName, email)
         if (req.firstName == null || req.firstName.isBlank()) {
             return ResponseEntity.badRequest().body(new ApiError("First name is required"));
         }
@@ -67,13 +66,11 @@ public class AuthRestController {
 
         Role userRole = roleRepository.findByName("USER").orElseGet(() -> roleRepository.save(new Role("USER")));
 
-        // Create AppUser
         AppUser user = new AppUser(req.username, passwordEncoder.encode(req.password));
         user.addRole(userRole);
         userRepository.save(user);
 
-        // Create Asiakas (Customer) record
-        Asiakas asiakas = new Asiakas(req.firstName, req.lastName != null ? req.lastName : "", req.email);
+        Asiakas asiakas = new Asiakas(req.firstName, req.lastName != null ? req.lastName : "", req.email, req.username);
         asiakasRepository.save(asiakas);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiMessage("User and customer profile created"));
@@ -85,23 +82,24 @@ public class AuthRestController {
             return ResponseEntity.badRequest().body(new ApiError("Missing credentials"));
         }
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                loginRequest.username, loginRequest.password);
-
         try {
-            Authentication auth = authenticationManager.authenticate(token);
+            Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
+            );
             SecurityContextHolder.getContext().setAuthentication(auth);
+
+            Asiakas asiakas = asiakasRepository.findByUsername(loginRequest.username)
+                    .orElseThrow(() -> new RuntimeException("Customer profile not found for username: " + loginRequest.username));
 
             var authorities = auth.getAuthorities().stream().map(a -> a.getAuthority()).collect(Collectors.toList());
             String tokenStr = jwtUtil.generateToken(loginRequest.username, authorities);
 
-            return ResponseEntity.ok(new AuthResponse(loginRequest.username, authorities, tokenStr));
+            return ResponseEntity.ok(new AuthResponse(loginRequest.username, authorities, tokenStr, asiakas.getId()));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiError("Invalid username or password"));
         }
     }
 
-    // Simple DTOs used by the REST endpoints
     public static class LoginRequest {
         public String username;
         public String password;
@@ -110,12 +108,12 @@ public class AuthRestController {
     public static class RegisterRequest {
         public String username;
         public String password;
-        public String firstName; // etunimi (Finnish)
-        public String lastName; // sukunimi (Finnish)
-        public String email; // sposti (Finnish)
+        public String firstName;
+        public String lastName;
+        public String email;
     }
 
-    public record AuthResponse(String username, List<String> roles, String token) {
+    public record AuthResponse(String username, List<String> roles, String token, Long id) {
     }
 
     public record ApiError(String error) {
