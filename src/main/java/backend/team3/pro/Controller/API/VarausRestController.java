@@ -6,8 +6,11 @@ import backend.team3.pro.Model.Varaus;
 import backend.team3.pro.Repository.AsiakasRepository;
 import backend.team3.pro.Repository.VaateRepository;
 import backend.team3.pro.Repository.VarausRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -46,4 +49,20 @@ public class VarausRestController {
     public List<Varaus> haeAsiakkaanVaraukset(@PathVariable Long asiakasId) {
         return varausRepository.findByAsiakasId(asiakasId);
     }
+
+    @DeleteMapping("/{id}")
+public ResponseEntity<?> poistaVaraus(@PathVariable Long id, Authentication auth) {
+   
+    Varaus varaus = varausRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Varausta ei löytynyt."));
+
+    String username = auth.getName();
+
+    if (!varaus.getAsiakas().getUsername().equals(username)) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Voit poistaa vain omia varauksiasi.");
+    }
+
+    varausRepository.delete(varaus);
+    return ResponseEntity.ok("Varaus peruutettu onnistuneesti.");
+}
 }
