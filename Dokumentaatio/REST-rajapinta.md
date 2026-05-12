@@ -2,9 +2,9 @@
 
 ## Yleiskuvaus
 
-Tämä dokumentti kuvaa sovelluksen toteutetut REST-endpointit. Rajapinta on luku-API, eli tällä hetkellä käytössä ovat vain `GET`-pyynnöt.
+Tämä dokumentti kuvaa sovelluksen toteutetut REST-endpointit. Rajapinta sisältää julkiset luku-endpointit sekä autentikointiin liittyvät `POST`-pyynnöt.
 
-Rajapinnan tarkoitus on tarjota frontendille ja ulkopuolisille testaajille pääsy tuotteisiin ja valmistajiin liittyvään dataan JSON-muodossa.
+Rajapinnan tarkoitus on tarjota frontendille ja ulkopuolisille testaajille pääsy tuotteisiin, valmistajiin ja käyttäjän autentikointiin liittyvään dataan JSON-muodossa.
 
 ## Perusosoite
 
@@ -23,8 +23,80 @@ http://localhost:8080/api/tuotteet
 ## Autentikointi ja käyttöoikeudet
 
 - Kaikki `GET /api/**` endpointit ovat käytettävissä ilman kirjautumista.
+- Autentikointiin käytetään JWT-tokenia. `POST /api/auth/login` palauttaa tokenin, joka voidaan lähettää jatkopyynnöissä `Authorization: Bearer <token>` -otsakkeessa.
+- `POST /api/auth/register` luo uuden käyttäjän ja asiakkaan perustiedot.
 - REST-kutsut palauttavat datan JSON-muodossa.
 - Rajapintaan on määritelty CORS-sallinta frontend-osoitteelle `https://frontendtiimi3-opt3frontend.2.rahtiapp.fi/`.
+
+## Autentikointi-endpointit
+
+### 1. Rekisteröi uusi käyttäjä
+
+- **Metodi:** `POST`
+- **Endpoint:** `/api/auth/register`
+- **Tarkoitus:** Luo uuden käyttäjän ja siihen liittyvän asiakasprofiilin.
+- **Polkuparametrit:** Ei ole
+- **Kyselyparametrit:** Ei ole
+- **Autentikointi:** Ei vaadi kirjautumista
+
+Esimerkkipyyntö:
+
+```http
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "matti",
+  "password": "salasana123",
+  "firstName": "Matti",
+  "lastName": "Meikäläinen",
+  "email": "matti@example.com"
+}
+```
+
+Esimerkkivastaus:
+
+```json
+{
+  "message": "User and customer profile created"
+}
+```
+
+### 2. Kirjaudu sisään
+
+- **Metodi:** `POST`
+- **Endpoint:** `/api/auth/login`
+- **Tarkoitus:** Tarkistaa tunnukset ja palauttaa JWT-tokenin.
+- **Polkuparametrit:** Ei ole
+- **Kyselyparametrit:** Ei ole
+- **Autentikointi:** Ei vaadi kirjautumista
+
+Esimerkkipyyntö:
+
+```http
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "matti",
+  "password": "salasana123"
+}
+```
+
+Esimerkkivastaus:
+
+```json
+{
+  "username": "matti",
+  "roles": ["ROLE_USER"],
+  "token": "eyJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+Huomio:
+
+- Token voidaan lähettää jatkopyynnöissä otsakkeessa `Authorization: Bearer <token>`.
+- Jos tunnukset ovat virheelliset, rajapinta palauttaa `401 Unauthorized`.
 
 ## Tietomallit
 
@@ -32,15 +104,15 @@ http://localhost:8080/api/tuotteet
 
 Tuoteolio sisältää seuraavat kentät:
 
-| Kenttä | Tyyppi | Kuvaus |
-|---|---|---|
-| `id` | number | Tuotteen yksilöllinen tunniste |
-| `name` | string | Tuotteen nimi |
-| `tyyppi` | object | Tuotteen tyyppi, esimerkiksi `vaate` tai `lelu` |
-| `koko` | string or null | Tuotteen koko, mahdolliset arvot ovat `S`, `M`, `L` |
-| `price` | number | Tuotteen hinta |
-| `varastoMaara` | number | Varastossa oleva määrä |
-| `valmistaja` | object | Tuotteen valmistaja |
+| Kenttä         | Tyyppi         | Kuvaus                                              |
+| -------------- | -------------- | --------------------------------------------------- |
+| `id`           | number         | Tuotteen yksilöllinen tunniste                      |
+| `name`         | string         | Tuotteen nimi                                       |
+| `tyyppi`       | object         | Tuotteen tyyppi, esimerkiksi `vaate` tai `lelu`     |
+| `koko`         | string or null | Tuotteen koko, mahdolliset arvot ovat `S`, `M`, `L` |
+| `price`        | number         | Tuotteen hinta                                      |
+| `varastoMaara` | number         | Varastossa oleva määrä                              |
+| `valmistaja`   | object         | Tuotteen valmistaja                                 |
 
 Esimerkkituote:
 
@@ -66,10 +138,10 @@ Esimerkkituote:
 
 Valmistajaolio sisältää seuraavat kentät:
 
-| Kenttä | Tyyppi | Kuvaus |
-|---|---|---|
-| `id` | number | Valmistajan yksilöllinen tunniste |
-| `name` | string | Valmistajan nimi |
+| Kenttä | Tyyppi | Kuvaus                            |
+| ------ | ------ | --------------------------------- |
+| `id`   | number | Valmistajan yksilöllinen tunniste |
+| `name` | string | Valmistajan nimi                  |
 
 Esimerkkivalmistaja:
 
@@ -281,9 +353,9 @@ Esimerkkivastaus:
 
 Toteutuksen perusteella yleisimmät vastaukset ovat:
 
-| Status | Merkitys |
-|---|---|
-| `200 OK` | Pyyntö onnistui |
+| Status                      | Merkitys                    |
+| --------------------------- | --------------------------- |
+| `200 OK`                    | Pyyntö onnistui             |
 | `500 Internal Server Error` | Palvelimella tapahtui virhe |
 
 Huomio:
